@@ -1,6 +1,7 @@
 package com.example.vehicle.controller;
 
 import com.example.vehicle.dto.VehicleDTO;
+import com.example.vehicle.dto.VehicleSearchDTO;
 import com.example.vehicle.entity.Vehicle;
 import com.example.vehicle.service.VehicleService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,21 +48,15 @@ public class VehicleController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Vehicle>> searchVehicles(
-            @RequestParam(required = false) String brandName,
-            @RequestParam(required = false) Integer year,
-            @RequestParam(required = false) Double price,
-            @RequestParam(required = false) String owner) {
-
-        List<Vehicle> vehicles = vehicleService.searchVehicles(brandName, year, price, owner);
-
+    @PostMapping("/search")
+    public ResponseEntity<List<Vehicle>> searchVehicles(@RequestBody VehicleSearchDTO req) {
+        List<Vehicle> vehicles = vehicleService.searchVehicles(req);
         return ResponseEntity.ok(vehicles);
     }
 
     @GetMapping("/filter")
     public ResponseEntity<List<Vehicle>> getVehiclesByCustomCondition() {
-        List<Vehicle> vehicles = vehicleService.getVehiclesByCustomCondition();
+        List<Vehicle> vehicles = vehicleService.getCustomVehicles();
         return ResponseEntity.ok(vehicles);
     }
 

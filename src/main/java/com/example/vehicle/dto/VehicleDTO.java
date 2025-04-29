@@ -8,10 +8,9 @@ import java.time.Instant;
 @Setter
 public class VehicleDTO {
     private String name;
-    private int year;
-    private double price;
+    private Integer year;
+    private Double price;
     private String owner;
     private Instant createdAt;
     private Long brandId;
-
 }

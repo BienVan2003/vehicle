@@ -1,17 +1,14 @@
 package com.example.vehicle.service;
 
-import com.example.vehicle.dto.VehicleDTO;
+import com.example.vehicle.dto.*;
 import com.example.vehicle.entity.Brand;
 import com.example.vehicle.entity.Vehicle;
 import com.example.vehicle.repository.BrandRepository;
 import com.example.vehicle.repository.VehicleRepository;
-import com.example.vehicle.repository.VehicleSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,17 +56,15 @@ public class VehicleService {
         vehicleRepository.deleteById(id);
     }
 
-    public List<Vehicle> searchVehicles(String brandName, Integer year, Double price, String owner) {
-        Specification<Vehicle> spec = Specification.where(VehicleSpecification.hasBrand(brandName))
-                .and(VehicleSpecification.hasYear(year))
-                .and(VehicleSpecification.hasPrice(price))
-                .and(VehicleSpecification.hasOwner(owner));
-
-        return vehicleRepository.findAll(spec);
+    public List<Vehicle> searchVehicles(VehicleSearchDTO req) {
+        return vehicleRepository.searchVehicles(req);
     }
 
-    public List<Vehicle> getVehiclesByCustomCondition() {
-        Specification<Vehicle> spec = VehicleSpecification.customPriceAndBrandCondition();
-        return vehicleRepository.findAll(spec);
+    public List<Vehicle> getCustomVehicles() {
+        Double priceThreshold = 10_000_000.0;
+        String brandPrefix = "S";
+        String brandType = "BUS";
+
+        return vehicleRepository.findVehiclesByCustomCondition(priceThreshold, brandPrefix, brandType);
     }
 }

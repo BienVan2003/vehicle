@@ -16,13 +16,12 @@ public class Vehicle {
     private Long id;
 
     private String name;
-    private int year;
-    private double price;
+    private Integer year;
+    private Double price;
     private String owner;
     private Instant createdAt;
 
     @ManyToOne
     @JoinColumn(name = "brand_id")
     private Brand brand;
-
 }
