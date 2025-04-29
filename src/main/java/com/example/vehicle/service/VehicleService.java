@@ -37,8 +37,10 @@ public class VehicleService {
         vehicle.setOwner(vehicleDTO.getOwner());
         vehicle.setCreatedAt(Instant.now());
 
-         Brand brand = brandRepository.findById(vehicleDTO.getBrandId()).orElseThrow();
-         vehicle.setBrand(brand);
+        if (vehicleDTO.getBrandId() != null) {
+            Brand brand = brandRepository.findById(vehicleDTO.getBrandId()).orElseThrow();
+            vehicle.setBrand(brand);
+        }
         return vehicleRepository.save(vehicle);
     }
 
