@@ -13,6 +13,9 @@ import com.example.vehicle.repository.VehicleRepository;
 import com.example.vehicle.service.VehicleService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
@@ -22,16 +25,14 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VehicleServiceImpl implements VehicleService {
+    VehicleRepository vehicleRepository;
 
-    @Autowired
-    private VehicleRepository vehicleRepository;
+    BrandRepository brandRepository;
 
-    @Autowired
-    private BrandRepository brandRepository;
-
-    @Autowired
-    private VehicleMapper vehicleMapper;
+    VehicleMapper vehicleMapper;
 
     public ResDTO<?> getAllVehicles() {
         List<VehicleResponse> vehicles = vehicleMapper.toResponse(vehicleRepository.findAll());

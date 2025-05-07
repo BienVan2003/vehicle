@@ -1,13 +1,18 @@
 package com.example.vehicle.dto.response;
 
 import com.example.vehicle.entity.Vehicle;
-import lombok.Data;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.util.List;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BrandResponse {
-    private Long id;
-    private String name;
-    private String type;
+    Long id;
+    String name;
+    String type;
 }

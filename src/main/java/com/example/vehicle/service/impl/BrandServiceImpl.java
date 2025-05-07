@@ -10,19 +10,20 @@ import com.example.vehicle.repository.BrandRepository;
 import com.example.vehicle.service.BrandService;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class BrandServiceImpl implements BrandService {
-
-    @Autowired
-    private BrandRepository brandRepository;
-
-    @Autowired
-    private BrandMapper brandMapper;
+    BrandRepository brandRepository;
+    BrandMapper brandMapper;
 
     public ResDTO<?> getAllBrands() {
         List<BrandResponse> brands = brandMapper.toResponse(brandRepository.findAll());

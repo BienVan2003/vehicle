@@ -1,15 +1,18 @@
 package com.example.vehicle.dto.request;
 
 import lombok.*;
+import lombok.experimental.FieldDefaults;
 
 import java.time.Instant;
 
 @Data
+@Builder
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class VehicleRequest {
-    private String name;
-    private Integer year;
-    private Double price;
-    private String owner;
-    private Instant createdAt;
-    private Long brandId;
+    String name;
+    Integer year;
+    Double price;
+    String owner;
+    Instant createdAt;
+    Long brandId;
 }
