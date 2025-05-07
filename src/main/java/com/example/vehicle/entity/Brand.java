@@ -1,11 +1,13 @@
 package com.example.vehicle.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
+
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Brand {
 
@@ -15,5 +17,9 @@ public class Brand {
 
     private String name;
     private String type;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "brand")
+    private List<Vehicle> vehicles;
 
 }

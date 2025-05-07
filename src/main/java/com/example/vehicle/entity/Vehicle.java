@@ -1,13 +1,13 @@
 package com.example.vehicle.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.Instant;
 
 @Entity
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 public class Vehicle {
 
@@ -21,7 +21,8 @@ public class Vehicle {
     private String owner;
     private Instant createdAt;
 
-    @ManyToOne
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "brand_id")
     private Brand brand;
 }

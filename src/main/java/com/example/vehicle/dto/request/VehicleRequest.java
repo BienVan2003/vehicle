@@ -1,12 +1,11 @@
-package com.example.vehicle.dto;
+package com.example.vehicle.dto.request;
 
 import lombok.*;
 
 import java.time.Instant;
 
-@Getter
-@Setter
-public class VehicleDTO {
+@Data
+public class VehicleRequest {
     private String name;
     private Integer year;
     private Double price;
