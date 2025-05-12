@@ -1,10 +1,11 @@
 package com.example.vehicle.dto.request;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Data;
+import jakarta.validation.constraints.Min;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+@NoArgsConstructor
+@AllArgsConstructor
 @Data
 @Builder
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -13,4 +14,8 @@ public class VehicleSearchRequest {
     Integer year;
     Double price;
     String owner;
+    @Min(0)
+    Integer page = 0;
+    @Min(1)
+    Integer size = 10;
 }

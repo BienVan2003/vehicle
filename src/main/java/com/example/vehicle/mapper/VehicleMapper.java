@@ -11,5 +11,6 @@ import java.util.List;
 public interface VehicleMapper {
     VehicleResponse toResponse(Vehicle vehicle);
     List<VehicleResponse> toResponse(List<Vehicle> vehicle);
+    Vehicle toEntity(VehicleRequest vehicleRequest);
 }
 

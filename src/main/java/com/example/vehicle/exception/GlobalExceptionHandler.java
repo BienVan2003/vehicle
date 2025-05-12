@@ -12,13 +12,13 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(EntityNotFoundException.class)
     public ResponseEntity<ResDTO<?>> handleEntityNotFound(EntityNotFoundException ex) {
-        ResDTO<?> response = new ResDTO<>(HttpServletResponse.SC_NOT_FOUND, ex.getMessage(), ex.getMessage());
+        ResDTO<?> response = new ResDTO<>(HttpServletResponse.SC_NOT_FOUND, ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
     }
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ResDTO<?>> handleGenericException(Exception ex) {
-        ResDTO<?> response = new ResDTO<>(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Internal Server Error", ex.getMessage());
+        ResDTO<?> response = new ResDTO<>(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, ex.getMessage(), null);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
     }
 }

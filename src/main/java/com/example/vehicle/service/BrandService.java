@@ -5,7 +5,9 @@ import com.example.vehicle.dto.request.BrandRequest;
 
 public interface BrandService {
 
-    ResDTO<?> getAllBrands();
+    ResDTO<?> getBrands();
+    ResDTO<?> getDeletedBrands();
+    ResDTO<?> getActiveBrands();
 
     ResDTO<?> getBrandById(Long id);
 

@@ -2,25 +2,27 @@ package com.example.vehicle.controller;
 
 import com.example.vehicle.dto.ResDTO;
 import com.example.vehicle.dto.request.*;
-import com.example.vehicle.entity.Vehicle;
 import com.example.vehicle.service.VehicleService;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
+import java.awt.print.Pageable;
 
 @RestController
 @RequestMapping("/api/vehicles")
+@RequiredArgsConstructor
 public class VehicleController {
 
-    @Autowired
-    private VehicleService vehicleService;
+    private final VehicleService vehicleService;
 
     @GetMapping
-    public ResponseEntity<?> getAllVehicles() {
-        ResDTO<?> res = vehicleService.getAllVehicles();
+    public ResponseEntity<?> getAllVehicles(@RequestParam(required = false) Boolean isDeleted) {
+        ResDTO<?> res = (isDeleted == null)
+                ? vehicleService.getVehicles() :
+                (isDeleted ? vehicleService.getDeletedVehicles() : vehicleService.getActiveVehicles());
         return ResponseEntity.status(res.getStatus()).body(res);
     }
 
@@ -48,9 +50,9 @@ public class VehicleController {
         return ResponseEntity.status(res.getStatus()).body(res);
     }
 
-    @PostMapping("/search")
-    public ResponseEntity<?> searchVehicles(@RequestBody VehicleSearchRequest req) {
-        ResDTO<?> res = vehicleService.searchVehicles(req);
+    @GetMapping("/search")
+    public ResponseEntity<?> searchVehicles(@Valid @ModelAttribute VehicleSearchRequest vehicleSearchRequest) {
+        ResDTO<?> res = vehicleService.searchVehicles(vehicleSearchRequest);
         return ResponseEntity.status(res.getStatus()).body(res);
     }
 

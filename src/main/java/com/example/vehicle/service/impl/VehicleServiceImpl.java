@@ -18,8 +18,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
 import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
@@ -34,25 +35,39 @@ public class VehicleServiceImpl implements VehicleService {
 
     VehicleMapper vehicleMapper;
 
-    public ResDTO<?> getAllVehicles() {
+    public ResDTO<?> getVehicles() {
         List<VehicleResponse> vehicles = vehicleMapper.toResponse(vehicleRepository.findAll());
         return new ResDTO<>(HttpServletResponse.SC_OK, MessageCode.VEHICLE_FETCHED, vehicles);
     }
 
+    @Override
+    public ResDTO<?> getDeletedVehicles() {
+        List<VehicleResponse> vehicles = vehicleMapper.toResponse(vehicleRepository.findByIsDeletedTrue());
+        return new ResDTO<>(HttpServletResponse.SC_OK, MessageCode.VEHICLE_FETCHED, vehicles);
+    }
+
+    @Override
+    public ResDTO<?> getActiveVehicles() {
+        List<VehicleResponse> vehicles = vehicleMapper.toResponse(vehicleRepository.findByIsDeletedFalseOrIsDeletedIsNull());
+        return new ResDTO<>(HttpServletResponse.SC_OK, MessageCode.VEHICLE_FETCHED, vehicles);
+    }
+
     public ResDTO<?> getVehicleById(Long id) {
-        Vehicle vehicle = vehicleRepository.findById(id)
+        Vehicle vehicle = vehicleRepository.findActiveById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id: " + id));
         VehicleResponse vehicleRes = vehicleMapper.toResponse(vehicle);
         return new ResDTO<>(HttpServletResponse.SC_OK, MessageCode.VEHICLE_FETCHED, vehicleRes);
     }
 
     public ResDTO<?> createVehicle(VehicleRequest vehicleReq) {
-        Vehicle vehicle = new Vehicle();
-        vehicle.setName(vehicleReq.getName());
-        vehicle.setYear(vehicleReq.getYear());
-        vehicle.setPrice(vehicleReq.getPrice());
-        vehicle.setOwner(vehicleReq.getOwner());
-        vehicle.setCreatedAt(Instant.now());
+        Vehicle vehicle = Vehicle.builder()
+                .name(vehicleReq.getName())
+                .year(vehicleReq.getYear())
+                .price(vehicleReq.getPrice())
+                .owner(vehicleReq.getOwner())
+                .createdAt(Instant.now())
+                .isDeleted(false)
+                .build();
 
         if (vehicleReq.getBrandId() != null) {
             Brand brand = brandRepository.findById(vehicleReq.getBrandId())
@@ -67,12 +82,11 @@ public class VehicleServiceImpl implements VehicleService {
     }
 
     public ResDTO<?> updateVehicle(Long id, VehicleRequest vehicleDTO) {
-        Vehicle vehicle = vehicleRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id: " + id));
+        Vehicle vehicle = vehicleRepository.findActiveById(id).orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id: " + id));
         vehicle.setName(vehicleDTO.getName());
         vehicle.setYear(vehicleDTO.getYear());
         vehicle.setPrice(vehicleDTO.getPrice());
         vehicle.setOwner(vehicleDTO.getOwner());
-        vehicle.setCreatedAt(vehicleDTO.getCreatedAt());
 
         Vehicle updateVehicle = vehicleRepository.save(vehicle);
         VehicleResponse vehicleResponse = vehicleMapper.toResponse(updateVehicle);
@@ -82,12 +96,14 @@ public class VehicleServiceImpl implements VehicleService {
     public ResDTO<?> deleteVehicle(Long id) {
         Vehicle vehicle = vehicleRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Vehicle not found with id: " + id));
-        vehicleRepository.deleteById(id);
+        vehicle.setIsDeleted(true);
+        vehicleRepository.save(vehicle);
         return new ResDTO<>(HttpServletResponse.SC_NO_CONTENT, MessageCode.VEHICLE_DELETED_SUCCESS, null);
     }
 
     public ResDTO<?> searchVehicles(VehicleSearchRequest req) {
-        List<Vehicle> vehicles = vehicleRepository.searchVehicles(req);
+        Pageable pageable = PageRequest.of(req.getPage(), req.getSize());
+        List<Vehicle> vehicles = vehicleRepository.searchVehicles(req, pageable);
         List<VehicleResponse> vehiclesResponses = vehicleMapper.toResponse(vehicles);
         return new ResDTO<>(HttpServletResponse.SC_OK, MessageCode.VEHICLE_FETCHED, vehiclesResponses);
     }

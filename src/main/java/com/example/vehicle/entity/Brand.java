@@ -18,12 +18,11 @@ public class Brand {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
-
     String name;
     String type;
+    Boolean isDeleted;
 
     @JsonIgnore
     @OneToMany(mappedBy = "brand")
     List<Vehicle> vehicles;
-
 }

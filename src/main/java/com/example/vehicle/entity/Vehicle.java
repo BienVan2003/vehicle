@@ -24,6 +24,7 @@ public class Vehicle {
     Double price;
     String owner;
     Instant createdAt;
+    Boolean isDeleted;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)

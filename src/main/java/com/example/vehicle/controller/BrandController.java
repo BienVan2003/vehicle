@@ -2,25 +2,24 @@ package com.example.vehicle.controller;
 
 import com.example.vehicle.dto.ResDTO;
 import com.example.vehicle.dto.request.BrandRequest;
-import com.example.vehicle.entity.Brand;
 import com.example.vehicle.service.BrandService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-import java.util.Optional;
-
 @RestController
 @RequestMapping("/api/brands")
+@RequiredArgsConstructor
 public class BrandController {
 
-    @Autowired
-    private BrandService brandService;
+    private final BrandService brandService;
 
     @GetMapping
-    public ResponseEntity<?> getAllBrands() {
-        ResDTO<?> res = brandService.getAllBrands();
+    public ResponseEntity<?> getAllBrands(@RequestParam(required = false) Boolean isDeleted) {
+        ResDTO<?> res = (isDeleted == null)
+                ? brandService.getBrands()
+                : (isDeleted ? brandService.getDeletedBrands() : brandService.getActiveBrands());
+
         return ResponseEntity.status(res.getStatus()).body(res);
     }
 
